@@ -13,46 +13,56 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========================================
-// STAR FIELD ANIMATION
+// UPGRADED MOVING STAR FIELD ANIMATION
 // ========================================
-
 function initStarField() {
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let mouseX = 0;
+    let mouseY = 0;
 
-    // Set canvas size
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    
+    // Add mouse tracking for parallax effect
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - width / 2) * 0.05;
+        mouseY = (e.clientY - height / 2) * 0.05;
+    });
 
-    // Star particle class
     class Star {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 1.5;
+        constructor(isNear) {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            // Near stars are larger and move faster, far stars are smaller/slower
+            this.z = isNear ? Math.random() * 2 + 1 : Math.random() * 1 + 0.1;
+            this.size = this.z * 1.2;
             this.opacity = Math.random() * 0.5 + 0.3;
-            this.twinkleSpeed = Math.random() * 0.03 + 0.01;
-            this.vx = (Math.random() - 0.5) * 0.1;
-            this.vy = (Math.random() - 0.5) * 0.1;
+            // Base velocity moving diagonally across the screen
+            this.baseVx = -this.z * 0.5;
+            this.baseVy = this.z * 0.5;
         }
 
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
+            // Add mouse parallax to the base movement
+            this.x += this.baseVx - mouseX * (this.z * 0.1);
+            this.y += this.baseVy - mouseY * (this.z * 0.1);
 
-            // Wrap around edges
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.y < 0) this.y = canvas.height;
-            if (this.y > canvas.height) this.y = 0;
+            // Wrap stars around the screen to create an infinite moving effect
+            if (this.x < 0) this.x = width;
+            if (this.x > width) this.x = 0;
+            if (this.y < 0) this.y = height;
+            if (this.y > height) this.y = 0;
 
-            // Twinkling effect
-            this.opacity += (Math.random() - 0.5) * this.twinkleSpeed;
-            this.opacity = Math.max(0.1, Math.min(0.8, this.opacity));
+            // Twinkle
+            this.opacity += (Math.random() - 0.5) * 0.05;
+            this.opacity = Math.max(0.2, Math.min(0.9, this.opacity));
         }
 
         draw() {
@@ -61,87 +71,30 @@ function initStarField() {
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
 
-            // Add subtle glow to some stars
-            if (Math.random() > 0.95) {
-                ctx.strokeStyle = `rgba(0, 217, 255, ${this.opacity * 0.5})`;
-                ctx.lineWidth = 0.5;
+            // Glow for closer stars
+            if (this.z > 2) {
+                ctx.strokeStyle = `rgba(0, 217, 255, ${this.opacity * 0.4})`;
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
                 ctx.stroke();
             }
         }
     }
 
-    // Nebula particle class
-    class NebulaParticle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.radius = Math.random() * 300 + 100;
-            this.opacity = Math.random() * 0.1 + 0.02;
-            this.color = ['rgba(139, 92, 246', 'rgba(0, 217, 255'][Math.floor(Math.random() * 2)];
-            this.vx = (Math.random() - 0.5) * 0.02;
-            this.vy = (Math.random() - 0.5) * 0.02;
-        }
-
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-        }
-
-        draw() {
-            const gradient = ctx.createRadialGradient(
-                this.x, this.y, 0,
-                this.x, this.y, this.radius
-            );
-            gradient.addColorStop(0, `${this.color}, ${this.opacity})`);
-            gradient.addColorStop(1, `${this.color}, 0)`);
-
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-
-    // Create star and nebula particles
-    const stars = Array(100).fill(null).map(() => new Star());
-    const nebulas = Array(3).fill(null).map(() => new NebulaParticle());
-
-    // Animation loop
-    function animate() {
-        // Clear canvas with semi-transparent background for trail effect
-        ctx.fillStyle = 'rgba(10, 14, 39, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw nebulas first (background)
-        nebulas.forEach(nebula => {
-            nebula.update();
-            nebula.draw();
-        });
-
-        // Draw stars
-        stars.forEach(star => {
-            star.update();
-            star.draw();
-        });
-
-        // Draw occasional shooting stars
-        if (Math.random() > 0.995) {
-            drawShootingStar();
-        }
-
-        requestAnimationFrame(animate);
-    }
+    // Create 150 background stars and 50 closer, faster stars
+    const stars = [
+        ...Array(150).fill(null).map(() => new Star(false)),
+        ...Array(50).fill(null).map(() => new Star(true))
+    ];
 
     function drawShootingStar() {
-        const startX = Math.random() * canvas.width;
-        const startY = Math.random() * canvas.height * 0.5;
-        const length = Math.random() * 100 + 50;
+        const startX = Math.random() * width;
+        const startY = Math.random() * height * 0.3;
+        const length = Math.random() * 150 + 100;
 
-        const gradient = ctx.createLinearGradient(startX, startY, startX + length, startY + length);
-        gradient.addColorStop(0, 'rgba(0, 217, 255, 0.8)');
-        gradient.addColorStop(0.5, 'rgba(0, 217, 255, 0.4)');
+        const gradient = ctx.createLinearGradient(startX, startY, startX - length, startY + length);
+        gradient.addColorStop(0, 'rgba(0, 217, 255, 1)');
         gradient.addColorStop(1, 'rgba(0, 217, 255, 0)');
 
         ctx.strokeStyle = gradient;
@@ -149,8 +102,26 @@ function initStarField() {
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(startX, startY);
-        ctx.lineTo(startX + length, startY + length);
+        ctx.lineTo(startX - length, startY + length);
         ctx.stroke();
+    }
+
+    function animate() {
+        // Clear canvas with a very faint trail effect
+        ctx.fillStyle = 'rgba(10, 14, 39, 0.3)';
+        ctx.fillRect(0, 0, width, height);
+
+        stars.forEach(star => {
+            star.update();
+            star.draw();
+        });
+
+        // 2% chance of a shooting star on every frame
+        if (Math.random() > 0.98) {
+            drawShootingStar();
+        }
+
+        requestAnimationFrame(animate);
     }
 
     animate();
@@ -645,12 +616,6 @@ document.querySelectorAll('.skill-planet').forEach(planet => {
         indicator.innerHTML = `
             <h3 style="color: var(--color-neon-cyan); margin-bottom: 1rem;">${skillName}</h3>
             <div style="
-                width: 200px;
-                height: 10px;
-                background: rgba(0, 217, 255, 0.1);
-                border-radius: 5px;
-                overflow: hidden;
-                border: 1px solid rgba(0, 217, 255, 0.3);
             ">
                 <div style="
                     width: ${skillLevel}%;
@@ -679,3 +644,16 @@ document.querySelectorAll('.skill-planet').forEach(planet => {
 
 console.log('🚀 Cosmic Portfolio loaded successfully!');
 console.log('✨ Enjoy exploring the digital cosmos!');
+
+
+
+// ========================================
+// SCROLL PROGRESS BAR
+// ========================================
+window.addEventListener('scroll', () => {
+    const scrollProgress = document.getElementById('scrollProgress');
+    const totalScroll = document.documentElement.scrollTop;
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scroll = `${totalScroll / windowHeight * 100}%`;
+    scrollProgress.style.width = scroll;
+});

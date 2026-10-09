@@ -1,17 +1,30 @@
-
-
 :root {
-    --color-black: #0a0e27;
-    --color-dark-blue: #0f1729;
-    --color-midnight: #1a2640;
-    --color-purple: #6d28d9;
-    --color-neon-cyan: #00d9ff;
-    --color-light-purple: #8b5cf6;
-    --color-white: #f5f5f5;
-    --color-gray: #9ca3af;
-    --glow-cyan: 0 0 20px rgba(0, 217, 255, 0.5);
-    --glow-purple: 0 0 20px rgba(139, 92, 246, 0.5);
-    --glow-soft: 0 0 40px rgba(139, 92, 246, 0.2);
+    /* Premium Deep Dark Backgrounds */
+    --color-black: #0B0F19;
+    /* Deep slate */
+    --color-dark-blue: #111827;
+    /* Soft navy */
+    --color-midnight: #1F2937;
+    /* For glass cards */
+
+    /* Striking Modern Accents */
+    --color-neon-cyan: #00F0FF;
+    /* Sharp, modern electric cyan */
+    --color-purple: #8B5CF6;
+    /* Vibrant violet */
+    --color-accent-pink: #EC4899;
+    /* Punchy pink for rich gradients */
+    --color-light-purple: #A78BFA;
+
+    /* Text */
+    --color-white: #F9FAFB;
+    --color-gray: #9CA3AF;
+
+    /* Controlled, Elegant Glows */
+    --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.3);
+    --glow-pink: 0 0 15px rgba(236, 72, 153, 0.3);
+    --glow-purple: 0 0 20px rgba(139, 92, 246, 0.25);
+    --glow-soft: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -126,14 +139,22 @@ body {
 
 .hero {
     position: relative;
-    min-height: 100vh;
+    /* Reduced from 100vh to 70vh to pull the About section up */
+    min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     z-index: 10;
-    padding-top: 80px;
+    padding-top: 120px;
+    padding-bottom: 2rem;
     overflow: hidden;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    animation: fade-in-up 1s ease-out;
 }
 
 .hero-content {
@@ -144,13 +165,14 @@ body {
 
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--color-neon-cyan), var(--color-light-purple));
+    /* Beautiful 3-color seamless gradient */
+    background: linear-gradient(135deg, var(--color-neon-cyan), var(--color-purple), var(--color-accent-pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: var(--glow-cyan);
+    text-shadow: 0px 4px 20px rgba(0, 240, 255, 0.15);
     letter-spacing: -0.5px;
 }
 
@@ -165,8 +187,9 @@ body {
 .cta-button {
     display: inline-block;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, var(--color-neon-cyan), var(--color-purple));
-    color: var(--color-black);
+    /* Elegant gradient button */
+    background: linear-gradient(135deg, var(--color-purple), var(--color-neon-cyan));
+    color: #ffffff;
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
@@ -205,10 +228,11 @@ body {
 .section {
     position: relative;
     z-index: 10;
-    padding: 1rem 2rem 5rem 2rem;
-    min-height: 100vh;
+    /* Perfectly balanced padding for top and bottom */
+    padding: 5rem 2rem;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .section-container {
@@ -367,20 +391,17 @@ body {
 }
 
 .skill-planet {
-    background: rgba(139, 92, 246, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 217, 255, 0.2);
+background: rgba(17, 24, 50, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+
+    /* Keep your existing border-radius and padding */
     border-radius: 20px;
     padding: 2rem;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    animation: fade-in-up 0.6s ease-out;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    /* ... keep the rest of your animation properties ... */
 }
 
 .skill-planet::before {
@@ -538,10 +559,17 @@ body {
 }
 
 .project-card p {
-    color: var(--color-gray);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+background: rgba(17, 24, 50, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+
+    /* Keep your existing border-radius and padding */
+    border-radius: 20px;
+    padding: 2rem;
+
 }
 
 .project-tech {
@@ -601,17 +629,18 @@ body {
 }
 
 .achievement-star {
-    background: rgba(139, 92, 246, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 217, 255, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    animation: fade-in-up 0.6s ease-out;
-}
+    background: rgba(17, 24, 50, 0.4);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+    
+        /* Keep your existing border-radius and padding */
+        border-radius: 20px;
+        padding: 2rem;
+
+    }
 
 .achievement-star::after {
     content: '';
@@ -879,6 +908,17 @@ body {
     text-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
 }
 
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-neon-cyan), var(--color-accent-pink));
+    width: 0%;
+    z-index: 9999;
+    box-shadow: var(--glow-cyan);
+}
+
 /* ========================================
    ANIMATIONS
    ======================================== */
@@ -1076,4 +1116,72 @@ body.parallax-enabled {
 
 .floating-planets {
     transform: translateY(calc(var(--parallax) * 0.5));
+}
+
+
+/* ========================================
+   PERMANENT VISIBILITY & CONTINUOUS FLOAT EFFECT
+   ======================================== */
+/* 1. Grid hamesha visible rahega */
+.skills-grid,
+.projects-grid,
+.achievements-grid {
+    display: grid !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* 2. Naya smooth up-and-down floating animation banaya */
+@keyframes smooth-float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+    /* Halka sa upar jayega */
+}
+
+/* 3. Saare cards par permanent float apply kiya */
+.skill-planet,
+.project-card,
+.achievement-star {
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* 5 second ka smooth loop */
+    animation: smooth-float 5s ease-in-out infinite !important;
+}
+
+/* 4. Natural effect ke liye odd/even cards ka timing alag kiya */
+.skill-planet:nth-child(odd),
+.project-card:nth-child(odd),
+.achievement-star:nth-child(odd) {
+    animation-delay: 0s !important;
+}
+
+.skill-planet:nth-child(even),
+.project-card:nth-child(even),
+.achievement-star:nth-child(even) {
+    animation-delay: 2.5s !important;
+    /* Yeh thodi der baad float karenge */
+}
+
+/* 5. Purane gayab hone wale bug ko permanently disable kiya */
+.fade-in {
+    opacity: 1 !important;
+}
+
+/* 6. Hover karne par glowing aur lift effect */
+.skill-planet:hover,
+.project-card:hover,
+.achievement-star:hover {
+    /* Jab mouse upar ho toh floating ruk jayegi */
+    animation-play-state: paused !important;
+    transform: translateY(-15px) scale(1.02) !important;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(236, 72, 153, 0.3) !important;
+    border-color: var(--color-neon-cyan) !important;
 }
